@@ -5,10 +5,10 @@ import { PasswordLoginForm } from "./PasswordLoginForm";
 import { OTPLoginForm } from "./OTPLoginForm";
 import { SignupForm } from "./SignupForm";
 import { useMobileAuth } from "@/hooks/useMobileAuth";
-import { useNavigate } from "react-router-dom"; // ✅ React Router for Vite
+import { useNavigate } from "react-router-dom";
 
 export const MobileAuth = () => {
-  const navigate = useNavigate(); // ✅ Initialize navigator
+  const navigate = useNavigate();
 
   const {
     authMode,
@@ -27,21 +27,22 @@ export const MobileAuth = () => {
     handleInputChange,
   } = useMobileAuth();
 
-  // ✅ OTP Success Handler with redirect
-  const handleOTPSuccess = async () => {
-    // Toast already shown in hook
-    navigate("/dashboard"); // 🔁 Redirect to dashboard after OTP
+  // ✅ Updated to accept user from MobileOTPInput
+  const handleOTPSuccess = async (user: any) => {
+    console.log("OTP verified successfully:", user);
+    navigate("/dashboard"); // ✅ Redirect
   };
 
   const handleCountryCodeChange = (value: string) => {
     setFormData({ ...formData, countryCode: value });
   };
 
+  // ✅ If OTP screen is active
   if (authMode === "otp") {
     return (
       <MobileOTPInput
         phoneNumber={formData.countryCode + formData.phoneNumber}
-        onSuccess={handleOTPSuccess}
+        onSuccess={handleOTPSuccess} // ✅ user is passed here
         onBack={() => {
           setAuthMode("signin");
           setConfirmationResult(null);
@@ -55,13 +56,15 @@ export const MobileAuth = () => {
 
   return (
     <>
+      {/* Firebase reCAPTCHA container */}
       <div id="recaptcha-container"></div>
+
       <Tabs
         value={authMode}
         onValueChange={(value) => setAuthMode(value as any)}
         className="w-full"
       >
-        {/* SIGN IN FORM */}
+        {/* ✅ Sign In */}
         <TabsContent value="signin" className="space-y-4 mt-6">
           <LoginMethodToggle
             loginMethod={loginMethod}
@@ -91,7 +94,7 @@ export const MobileAuth = () => {
           )}
         </TabsContent>
 
-        {/* SIGN UP FORM */}
+        {/* ✅ Sign Up */}
         <TabsContent value="signup" className="space-y-4 mt-6">
           <SignupForm
             formData={formData}
