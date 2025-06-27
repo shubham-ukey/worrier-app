@@ -1,4 +1,3 @@
-
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { MobileOTPInput } from "./MobileOTPInput";
 import { LoginMethodToggle } from "./LoginMethodToggle";
@@ -6,8 +5,11 @@ import { PasswordLoginForm } from "./PasswordLoginForm";
 import { OTPLoginForm } from "./OTPLoginForm";
 import { SignupForm } from "./SignupForm";
 import { useMobileAuth } from "@/hooks/useMobileAuth";
+import { useNavigate } from "react-router-dom"; // ✅ React Router for Vite
 
 export const MobileAuth = () => {
+  const navigate = useNavigate(); // ✅ Initialize navigator
+
   const {
     authMode,
     setAuthMode,
@@ -22,21 +24,26 @@ export const MobileAuth = () => {
     isLoading,
     handlePasswordLogin,
     handleSendOTP,
-    handleOTPSuccess,
     handleInputChange,
   } = useMobileAuth();
+
+  // ✅ OTP Success Handler with redirect
+  const handleOTPSuccess = async () => {
+    // Toast already shown in hook
+    navigate("/dashboard"); // 🔁 Redirect to dashboard after OTP
+  };
 
   const handleCountryCodeChange = (value: string) => {
     setFormData({ ...formData, countryCode: value });
   };
 
-  if (authMode === 'otp') {
+  if (authMode === "otp") {
     return (
       <MobileOTPInput
         phoneNumber={formData.countryCode + formData.phoneNumber}
         onSuccess={handleOTPSuccess}
         onBack={() => {
-          setAuthMode('signin');
+          setAuthMode("signin");
           setConfirmationResult(null);
         }}
         onResendOTP={handleSendOTP}
@@ -49,7 +56,11 @@ export const MobileAuth = () => {
   return (
     <>
       <div id="recaptcha-container"></div>
-      <Tabs value={authMode} onValueChange={(value) => setAuthMode(value as any)} className="w-full">
+      <Tabs
+        value={authMode}
+        onValueChange={(value) => setAuthMode(value as any)}
+        className="w-full"
+      >
         {/* SIGN IN FORM */}
         <TabsContent value="signin" className="space-y-4 mt-6">
           <LoginMethodToggle
@@ -57,7 +68,7 @@ export const MobileAuth = () => {
             onMethodChange={setLoginMethod}
           />
 
-          {loginMethod === 'password' ? (
+          {loginMethod === "password" ? (
             <PasswordLoginForm
               formData={formData}
               showPassword={showPassword}
