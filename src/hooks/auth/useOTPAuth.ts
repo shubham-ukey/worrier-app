@@ -142,7 +142,7 @@ export const useOTPAuth = () => {
         title: "Success!",
         description: "Phone number verified and signed in successfully!",
       });
-
+      
       // Wait for Supabase session to be set before redirecting
       let maxWait = 20; // max 2 seconds
       let sessionSet = false;
@@ -159,7 +159,7 @@ export const useOTPAuth = () => {
         console.warn('Supabase session not set after OTP login, forcing reload.');
       }
 
-      window.location.href = '/dashboard';
+        window.location.href = '/dashboard';
       
     } catch (error: any) {
       console.error('OTP verification error:', error);
