@@ -30,7 +30,7 @@ export const MobileAuth = () => {
   // ✅ Updated to accept user from MobileOTPInput
   const handleOTPSuccess = async (user: any) => {
     console.log("OTP verified successfully:", user);
-    navigate("/dashboard"); // ✅ Redirect
+    navigate("/profile"); // ✅ Redirect
   };
 
   const handleCountryCodeChange = (value: string) => {
