@@ -1,3 +1,4 @@
+
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { MobileOTPInput } from "./MobileOTPInput";
 import { LoginMethodToggle } from "./LoginMethodToggle";
@@ -5,11 +6,8 @@ import { PasswordLoginForm } from "./PasswordLoginForm";
 import { OTPLoginForm } from "./OTPLoginForm";
 import { SignupForm } from "./SignupForm";
 import { useMobileAuth } from "@/hooks/useMobileAuth";
-import { useNavigate } from "react-router-dom";
 
 export const MobileAuth = () => {
-  const navigate = useNavigate();
-
   const {
     authMode,
     setAuthMode,
@@ -24,27 +22,21 @@ export const MobileAuth = () => {
     isLoading,
     handlePasswordLogin,
     handleSendOTP,
+    handleOTPSuccess,
     handleInputChange,
   } = useMobileAuth();
-
-  // ✅ Updated to accept user from MobileOTPInput
-  const handleOTPSuccess = async (user: any) => {
-    console.log("OTP verified successfully:", user);
-    navigate("/profile"); // ✅ Redirect
-  };
 
   const handleCountryCodeChange = (value: string) => {
     setFormData({ ...formData, countryCode: value });
   };
 
-  // ✅ If OTP screen is active
-  if (authMode === "otp") {
+  if (authMode === 'otp') {
     return (
       <MobileOTPInput
         phoneNumber={formData.countryCode + formData.phoneNumber}
-        onSuccess={handleOTPSuccess} // ✅ user is passed here
+        onSuccess={handleOTPSuccess}
         onBack={() => {
-          setAuthMode("signin");
+          setAuthMode('signin');
           setConfirmationResult(null);
         }}
         onResendOTP={handleSendOTP}
@@ -56,22 +48,16 @@ export const MobileAuth = () => {
 
   return (
     <>
-      {/* Firebase reCAPTCHA container */}
       <div id="recaptcha-container"></div>
-
-      <Tabs
-        value={authMode}
-        onValueChange={(value) => setAuthMode(value as any)}
-        className="w-full"
-      >
-        {/* ✅ Sign In */}
+      <Tabs value={authMode} onValueChange={(value) => setAuthMode(value as any)} className="w-full">
+        {/* SIGN IN FORM */}
         <TabsContent value="signin" className="space-y-4 mt-6">
           <LoginMethodToggle
             loginMethod={loginMethod}
             onMethodChange={setLoginMethod}
           />
 
-          {loginMethod === "password" ? (
+          {loginMethod === 'password' ? (
             <PasswordLoginForm
               formData={formData}
               showPassword={showPassword}
@@ -94,7 +80,7 @@ export const MobileAuth = () => {
           )}
         </TabsContent>
 
-        {/* ✅ Sign Up */}
+        {/* SIGN UP FORM */}
         <TabsContent value="signup" className="space-y-4 mt-6">
           <SignupForm
             formData={formData}
