@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -143,11 +142,24 @@ export const useOTPAuth = () => {
         title: "Success!",
         description: "Phone number verified and signed in successfully!",
       });
-      
-      // Redirect to dashboard
-      setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 1000);
+
+      // Wait for Supabase session to be set before redirecting
+      let maxWait = 20; // max 2 seconds
+      let sessionSet = false;
+      while (maxWait-- > 0) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session && session.user) {
+          sessionSet = true;
+          break;
+        }
+        await new Promise(res => setTimeout(res, 100));
+      }
+
+      if (!sessionSet) {
+        console.warn('Supabase session not set after OTP login, forcing reload.');
+      }
+
+      window.location.href = '/dashboard';
       
     } catch (error: any) {
       console.error('OTP verification error:', error);
